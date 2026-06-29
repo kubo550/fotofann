@@ -1,10 +1,102 @@
 <!doctype html>
-<html lang="en">
+<html lang="pl">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>fotofann</title>
+
+    <!-- UWAGA: ustaw właściwą domenę produkcyjną w canonical / og:url / JSON-LD poniżej. -->
+    <title>FotoFann · fotobudki, ciężki dym i atrakcje weselne | Krzeszowice</title>
+    <meta
+      name="description"
+      content="FotoFann · usługi rozrywkowe na wesela, przyjęcia i imprezy dla dzieci. Fotobudka tradycyjna i 360°, ciężki dym, serce LED, napis LOVE, fontanny iskier i dmuchańce. Krzeszowice i okolice."
+    />
+    <link rel="canonical" href="https://fotofann.pl/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="author" content="FotoFann" />
+    <meta name="theme-color" content="#c9a24b" />
+
+    <!-- Geo -->
+    <meta name="geo.region" content="PL-12" />
+    <meta name="geo.placename" content="Krzeszowice" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="FotoFann" />
+    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:title" content="FotoFann · fotobudki, ciężki dym i atrakcje weselne" />
+    <meta
+      property="og:description"
+      content="Fotobudka tradycyjna i 360°, ciężki dym, serce LED, napis LOVE, fontanny iskier i dmuchańce dla dzieci. Krzeszowice i okolice."
+    />
+    <meta property="og:url" content="https://fotofann.pl/" />
+    <meta property="og:image" content="https://fotofann.pl/img/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Nowożeńcy w pierwszym tańcu w ciężkim dymie — FotoFann" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="FotoFann · fotobudki, ciężki dym i atrakcje weselne" />
+    <meta
+      name="twitter:description"
+      content="Atrakcje na wesela, przyjęcia i imprezy dla dzieci. Krzeszowice i okolice."
+    />
+    <meta name="twitter:image" content="https://fotofann.pl/img/og-image.jpg" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=Great+Vibes&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- LCP image preload -->
+    <link rel="preload" as="image" href="/img/hero-dance-smoke.jpg" fetchpriority="high" />
+
+    <!-- Structured data: LocalBusiness -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "FotoFann",
+        "description": "Usługi rozrywkowe na wesela, przyjęcia i imprezy dla dzieci: fotobudka tradycyjna i 360°, ciężki dym, serce LED, napis LOVE, fontanny iskier oraz dmuchańce.",
+        "image": "https://fotofann.pl/img/og-image.jpg",
+        "url": "https://fotofann.pl/",
+        "telephone": "+48503657992",
+        "email": "fotoofann@gmail.com",
+        "priceRange": "$$",
+        "areaServed": "Krzeszowice i okolice, woj. małopolskie",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Krzeszowice",
+          "addressRegion": "małopolskie",
+          "addressCountry": "PL"
+        },
+        "sameAs": [
+          "https://instagram.com/_fotofann__",
+          "https://facebook.com"
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Atrakcje FotoFann",
+          "itemListElement": [
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fotobudka tradycyjna" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fotobudka 360°" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ciężki dym" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Serce LED" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Napis LOVE" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Serduszko LED" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fontanny iskier" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Dmuchańce dla dzieci" } }
+          ]
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
