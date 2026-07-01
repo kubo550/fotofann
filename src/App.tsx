@@ -753,17 +753,17 @@ function App() {
           <div>
             <h2 className="footer__heading">Kontakt</h2>
             <div className="footer__links">
-              <a href="tel:+48504579380">
+              <a href="tel:+48504579380" aria-label="Zadzwoń do Mateusza: 504 579 380">
                 <span aria-hidden="true">
                   <IconPhone />
                 </span>{' '}
-                504 579 380
+                Mateusz · 504 579 380
               </a>
-              <a href="tel:+48507843103">
+              <a href="tel:+48507843103" aria-label="Zadzwoń do Wiktora: 507 843 103">
                 <span aria-hidden="true">
                   <IconPhone />
                 </span>{' '}
-                507 843 103
+                Wiktor · 507 843 103
               </a>
               <a href="mailto:fotoofann@gmail.com">
                 <span aria-hidden="true">
