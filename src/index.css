@@ -13,6 +13,7 @@
   --serif: 'Cormorant Garamond', Georgia, serif;
   --sans: 'Manrope', system-ui, sans-serif;
   --script: 'Great Vibes', cursive;
+  --fun: 'Fredoka', 'Manrope', system-ui, sans-serif;
 }
 
 * {
@@ -126,6 +127,7 @@ button {
     transform: none;
     transition: none;
   }
+  .brand-mark,
   .hero__scroll-cue,
   .hero__bg {
     animation: none !important;
@@ -194,9 +196,42 @@ button {
   text-decoration: none;
   color: var(--ink);
 }
-.nav__logo {
-  height: clamp(40px, 5.5vw, 52px);
-  width: auto;
+/* ---------- Brand lockup (FotoFann x LIL JOY) ---------- */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+}
+.brand-mark {
+  display: inline-flex;
+  color: var(--gold);
+  animation: floaty 5s ease-in-out infinite;
+}
+.brand-text {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  line-height: 1;
+}
+.brand-name {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.36em;
+  color: var(--ink);
+}
+.brand-x {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--gold-deep);
+  transform: translateY(-1px);
+}
+.brand-liljoy {
+  font-family: var(--fun);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: 0.02em;
+  color: var(--gold);
 }
 .nav__links {
   display: flex;
@@ -280,6 +315,14 @@ button {
   color: var(--gold-2);
   margin: 0 0 34px;
   line-height: 1.1;
+}
+.hero__lead {
+  font-family: var(--sans);
+  font-size: clamp(15px, 1.9vw, 18px);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 620px;
+  margin: 0 auto 34px;
 }
 .hero__cta {
   display: flex;
@@ -831,9 +874,14 @@ button {
   align-items: center;
   margin-bottom: 18px;
 }
-.footer__logo {
-  height: clamp(64px, 9vw, 84px);
-  width: auto;
+.footer__brand .brand-name {
+  color: #f7f4ee;
+}
+.footer__brand .brand-mark {
+  color: var(--gold-2);
+}
+.footer__brand .brand-liljoy {
+  color: var(--gold-2);
 }
 .footer__brand p {
   font-size: 14.5px;

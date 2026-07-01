@@ -51,7 +51,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=Great+Vibes&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Fredoka:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=Great+Vibes&display=swap"
       rel="stylesheet"
     />
 
@@ -70,7 +70,13 @@
         "telephone": ["+48504579380", "+48507843103"],
         "email": "fotoofann@gmail.com",
         "priceRange": "$$",
-        "areaServed": "Krzeszowice i okolice, woj. małopolskie",
+        "areaServed": [
+          { "@type": "City", "name": "Krzeszowice" },
+          { "@type": "City", "name": "Kraków" },
+          { "@type": "City", "name": "Chrzanów" },
+          { "@type": "City", "name": "Trzebinia" },
+          { "@type": "City", "name": "Olkusz" }
+        ],
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "Krzeszowice",
@@ -98,12 +104,12 @@
           "itemListElement": [
             { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fotobudka tradycyjna" } },
             { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fotobudka 360°" } },
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ciężki dym" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ciężki dym (suchy lód)" } },
             { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Serce LED" } },
             { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Napis LOVE" } },
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Serduszko LED" } },
             { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fontanny iskier" } },
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Dmuchańce dla dzieci" } }
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Dmuchaniec Słonik" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Dmuchaniec Panda" } }
           ]
         }
       }

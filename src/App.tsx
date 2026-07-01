@@ -1,6 +1,43 @@
 import { useEffect, useRef, useState } from 'react'
 
 /* ---------- Icons ---------- */
+function LogoMark({ size = 26 }: { size?: number }) {
+  const sw = size > 30 ? 1.2 : 1.4
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <rect x="2.5" y="6.5" width="19" height="13.5" rx="2.5" stroke="currentColor" strokeWidth={sw} />
+      <path d="M8.5 6.5l1.3-2.3h4.4l1.3 2.3" stroke="currentColor" strokeWidth={sw} strokeLinejoin="round" />
+      <path
+        d="M12 17c-2-1.3-3.3-2.5-3.3-4 0-1 .8-1.8 1.8-1.8.7 0 1.2.4 1.5.9.3-.5.8-.9 1.5-.9 1 0 1.8.8 1.8 1.8 0 1.5-1.3 2.7-3.3 4z"
+        fill="currentColor"
+      />
+    </svg>
+  )
+}
+
+function BrandLockup({ markSize = 26 }: { markSize?: number }) {
+  return (
+    <span className="brand">
+      <span className="brand-mark">
+        <LogoMark size={markSize} />
+      </span>
+      <span className="brand-text">
+        <span className="brand-name">FOTOFANN</span>
+        <span className="brand-x">×</span>
+        <span className="brand-liljoy">LIL JOY</span>
+      </span>
+    </span>
+  )
+}
+
 function Diamond() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
@@ -105,7 +142,7 @@ const SERVICES: Service[] = [
     key: 'fotobudka',
     name: 'Fotobudka tradycyjna',
     img: { src: '/img/fotobudka-trad.webp', w: 674, h: 900 },
-    desc: 'Doskonała zabawa i niezapomniane wspomnienia w formie zdjęć. Nielimitowane wydruki, mnóstwo gadżetów i zdjęcia w chmurze.',
+    desc: 'Doskonała zabawa i niezapomniane wspomnienia w formie zdjęć. Mnóstwo gadżetów i zdjęcia w chmurze.',
   },
   {
     key: '360',
@@ -115,9 +152,9 @@ const SERVICES: Service[] = [
   },
   {
     key: 'dym',
-    name: 'Ciężki dym',
+    name: 'Ciężki dym (suchy lód)',
     img: { src: '/img/dance-smoke.webp', w: 780, h: 900 },
-    desc: 'Unosi się nisko nad parkietem, by pierwszy taniec wyglądał jak z bajki. Hipoalergiczny, znika bez śladu, parkiet pozostaje suchy.',
+    desc: 'Unosi się nisko nad parkietem, by pierwszy taniec wyglądał jak z bajki. Wytwornica oparta na suchym lodzie.',
   },
   {
     key: 'serce',
@@ -128,14 +165,8 @@ const SERVICES: Service[] = [
   {
     key: 'love',
     name: 'Napis LOVE',
-    img: { src: '/img/love-floor.webp', w: 674, h: 900 },
-    desc: 'Efektowny, podświetlany napis LOVE. Klasyka, która zdobi każdy weselny kadr.',
-  },
-  {
-    key: 'serduszko',
-    name: 'Serduszko LED',
     img: { src: '/img/love-garden.webp', w: 999, h: 749 },
-    desc: 'Rustykalne, podświetlane serduszko dodające ciepła i charakteru dekoracji.',
+    desc: 'Efektowny, drewniany, podświetlany napis LOVE. Klasyka, która zdobi każdy romantyczny kadr.',
   },
   {
     key: 'iskry',
@@ -144,16 +175,22 @@ const SERVICES: Service[] = [
     desc: 'Ozdobny stelaż, z którego wydobywają się migoczące iskry. Efektowne widowisko przy pierwszym tańcu czy torcie.',
   },
   {
-    key: 'dmuchance',
-    name: 'Dmuchańce dla dzieci',
+    key: 'dmuchaniec-slonik',
+    name: 'Dmuchaniec Słonik',
     img: { src: '/img/dmuchance-slonik.webp', w: 1200, h: 900 },
-    desc: 'Ogromne, kolorowe zjeżdżalnie dmuchane w motywie safari i pandy, nawet do 6,6 m wysokości. Radosna zabawa dla najmłodszych gości we współpracy z LIL-JOY.',
+    desc: 'Kolorowa zjeżdżalnia w motywie safari. Wymiary 7 × 4 m, wysokość 5,5 m. Radosna zabawa dla najmłodszych.',
+    kids: true,
+  },
+  {
+    key: 'dmuchaniec-panda',
+    name: 'Dmuchaniec Panda',
+    img: { src: '/img/dmuchance-panda.webp', w: 1200, h: 900 },
+    desc: 'Zjeżdżalnia w motywie pandy i bambusa, nasza nowość. Wymiary 8 × 4,75 m, wysokość 6,6 m.',
     kids: true,
   },
 ]
 
 const PERKS = [
-  { title: 'Bez limitów', text: 'Nielimitowana liczba zdjęć i wydruków przez cały czas trwania.' },
   { title: 'Zdjęcia w chmurze', text: 'Wszystkie kadry dostępne online, od razu do pobrania.' },
   { title: 'Bezpieczny dym', text: 'Hipoalergiczny, neutralny zapach, znika bez śladu, parkiet suchy.' },
   { title: 'Różne tła', text: 'Eleganckie białe, stylowe boho lub dmuchany namiot LED.' },
@@ -170,7 +207,6 @@ const PACKAGES = [
 const GALLERY: { src: string; alt: string; w: number; h: number }[] = [
   { src: '/img/dym-wide.webp', alt: 'Para w pierwszym tańcu w ciężkim dymie', w: 1200, h: 899 },
   { src: '/img/love-floor.webp', alt: 'Podświetlany napis LOVE na sali weselnej', w: 674, h: 900 },
-  { src: '/img/bridesmaids.webp', alt: 'Druhny z gazetą ślubną w dłoniach', w: 733, h: 1100 },
   { src: '/img/serce-led.webp', alt: 'Duże podświetlane serce LED', w: 825, h: 1100 },
   { src: '/img/gadgets.webp', alt: 'Kolorowe gadżety i rekwizyty do fotobudki', w: 674, h: 900 },
   { src: '/img/venue.webp', alt: 'Elegancka sala weselna z dekoracjami', w: 1200, h: 800 },
@@ -341,14 +377,8 @@ function App() {
 
       {/* NAV */}
       <nav className="nav" aria-label="Nawigacja główna">
-        <a href="#top" className="nav__brand" aria-label="FotoFann — strona główna">
-          <img
-            src="/logo-on-light.png"
-            alt="FotoFann — usługi rozrywkowe"
-            className="nav__logo"
-            width={786}
-            height={446}
-          />
+        <a href="#top" className="nav__brand" aria-label="FotoFann x LIL JOY — strona główna">
+          <BrandLockup markSize={26} />
         </a>
         <div className="nav__links">
           <a href="#oferta" className="navlink">
@@ -384,7 +414,11 @@ function App() {
               <br />
               robią wrażenie
             </h1>
-            <p className="hero__script">od pierwszego tańca po dziecięcą zabawę</p>
+            <p className="hero__lead">
+              Tworzymy niezapomniany klimat na weselach, eventach i przyjęciach prywatnych. Sprawdź
+              naszą ofertę wynajmu: od romantycznych efektów na pierwszy taniec, przez fotobudki, aż
+              po pełne energii dmuchańce dla najmłodszych.
+            </p>
             <div className="hero__cta">
               <a href="#rezerwacja" className="btn btn--gold">
                 Zarezerwuj termin
@@ -395,7 +429,7 @@ function App() {
             </div>
           </div>
           <div className="hero__scroll">
-            <span className="hero__loc">Krzeszowice i okolice</span>
+            <span className="hero__loc">Krzeszowice · Kraków · Chrzanów · Trzebinia · Olkusz</span>
             <a href="#oferta" className="hero__scroll-cue" aria-label="Przewiń w dół, do oferty">
               <span>przewiń</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
@@ -417,7 +451,7 @@ function App() {
             <div className="ribbon-wrap">
               <Ribbon>Dla kogo</Ribbon>
             </div>
-            <h2 id="worlds-title">Dwa światy, jedna klasa</h2>
+            <h2 id="worlds-title">Trzy światy, jedna klasa</h2>
             <p>
               Tworzymy dostojną oprawę najważniejszych chwil i wnosimy radość, gdy bawią się najmłodsi.
               Niezależnie od okazji, dbamy o ten sam, dopracowany detal.
@@ -429,10 +463,10 @@ function App() {
               <div className="world__grad" />
               <div className="world__body">
                 <span className="world__script">Elegancja weselna</span>
-                <h3>Dla par przed ślubem</h3>
+                <h3>Dla Pary Młodej</h3>
                 <p>
-                  Ciężki dym, podświetlane dekoracje i fontanny iskier. Romantyczna, premium atmosfera
-                  Waszego wieczoru.
+                  Fotobudki, ciężki dym, podświetlane dekoracje i fontanny iskier. Romantyczna, premium
+                  atmosfera Waszego wieczoru.
                 </p>
               </div>
             </article>
@@ -441,8 +475,17 @@ function App() {
               <div className="world__grad" />
               <div className="world__body">
                 <span className="world__script">Radość dla dzieci</span>
-                <h3>Dla mam z dziećmi</h3>
+                <h3>Dla najmłodszych</h3>
                 <p>Dmuchańce, fotobudka i mnóstwo gadżetów. Uśmiech najmłodszych gości w klasie wyżej.</p>
+              </div>
+            </article>
+            <article className="world reveal">
+              <img src="/img/venue.webp" alt="Sala przygotowana na przyjęcie okolicznościowe" width={1200} height={800} loading="lazy" />
+              <div className="world__grad" />
+              <div className="world__body">
+                <span className="world__script">Każda okazja</span>
+                <h3>Imprezy okolicznościowe</h3>
+                <p>Osiemnastki, komunie, wesela, studniówki i inne przyjęcia. Oprawa dopasowana do okazji.</p>
               </div>
             </article>
           </div>
@@ -737,17 +780,11 @@ function App() {
         <div className="footer__grid">
           <div className="footer__brand">
             <div className="brand-row">
-              <img
-                src="/logo-on-dark.png"
-                alt="FotoFann — usługi rozrywkowe"
-                className="footer__logo"
-                width={786}
-                height={446}
-              />
+              <BrandLockup markSize={30} />
             </div>
             <p>
-              Atrakcje i dekoracje na wesela, przyjęcia oraz imprezy dla dzieci. Krzeszowice i okolice,
-              woj. małopolskie.
+              Atrakcje i dekoracje na wesela, przyjęcia oraz imprezy dla dzieci. Krzeszowice, Kraków,
+              Chrzanów, Trzebinia, Olkusz i okolice, woj. małopolskie.
             </p>
           </div>
           <div>
