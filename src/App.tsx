@@ -1,30 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
 /* ---------- Icons ---------- */
-type IconProps = { size?: number }
-
-function LogoMark({ size = 26 }: IconProps) {
-  const sw = size > 30 ? 1.2 : 1.4
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <rect x="2.5" y="6.5" width="19" height="13.5" rx="2.5" stroke="currentColor" strokeWidth={sw} />
-      <path d="M8.5 6.5l1.3-2.3h4.4l1.3 2.3" stroke="currentColor" strokeWidth={sw} strokeLinejoin="round" />
-      <path
-        d="M12 17c-2-1.3-3.3-2.5-3.3-4 0-1 .8-1.8 1.8-1.8.7 0 1.2.4 1.5.9.3-.5.8-.9 1.5-.9 1 0 1.8.8 1.8 1.8 0 1.5-1.3 2.7-3.3 4z"
-        fill="currentColor"
-      />
-    </svg>
-  )
-}
-
 function Diamond() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
@@ -94,6 +70,28 @@ function IconFb() {
   )
 }
 
+function IconClose() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IconChevron({ dir }: { dir: 'left' | 'right' }) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+      <path
+        d={dir === 'left' ? 'M15 6l-6 6 6 6' : 'M9 6l6 6-6 6'}
+        stroke="currentColor"
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 function Ribbon({ children }: { children: string }) {
   return <span className="ribbon">{children}</span>
 }
@@ -106,50 +104,50 @@ const SERVICES: Service[] = [
   {
     key: 'fotobudka',
     name: 'Fotobudka tradycyjna',
-    img: { src: '/img/fotobudka-trad.jpg', w: 674, h: 900 },
+    img: { src: '/img/fotobudka-trad.webp', w: 674, h: 900 },
     desc: 'Doskonała zabawa i niezapomniane wspomnienia w formie zdjęć. Nielimitowane wydruki, mnóstwo gadżetów i zdjęcia w chmurze.',
   },
   {
     key: '360',
     name: 'Fotobudka 360°',
-    img: { src: '/img/fotobudka-360.jpg', w: 674, h: 900 },
+    img: { src: '/img/fotobudka-360.webp', w: 674, h: 900 },
     desc: 'Nowoczesne, filmowe ujęcia z każdej perspektywy. Mnóstwo gadżetów i pełna personalizacja filmiku.',
   },
   {
     key: 'dym',
     name: 'Ciężki dym',
-    img: { src: '/img/dance-smoke.jpg', w: 780, h: 900 },
+    img: { src: '/img/dance-smoke.webp', w: 780, h: 900 },
     desc: 'Unosi się nisko nad parkietem, by pierwszy taniec wyglądał jak z bajki. Hipoalergiczny, znika bez śladu, parkiet pozostaje suchy.',
   },
   {
     key: 'serce',
     name: 'Serce LED',
-    img: { src: '/img/serce-led.jpg', w: 825, h: 1100 },
+    img: { src: '/img/serce-led.webp', w: 825, h: 1100 },
     desc: 'Duże, podświetlane serce tworzące romantyczną oprawę najważniejszego wieczoru.',
   },
   {
     key: 'love',
     name: 'Napis LOVE',
-    img: { src: '/img/love-floor.jpg', w: 674, h: 900 },
+    img: { src: '/img/love-floor.webp', w: 674, h: 900 },
     desc: 'Efektowny, podświetlany napis LOVE. Klasyka, która zdobi każdy weselny kadr.',
   },
   {
     key: 'serduszko',
     name: 'Serduszko LED',
-    img: { src: '/img/love-garden.jpg', w: 999, h: 749 },
+    img: { src: '/img/love-garden.webp', w: 999, h: 749 },
     desc: 'Rustykalne, podświetlane serduszko dodające ciepła i charakteru dekoracji.',
   },
   {
     key: 'iskry',
     name: 'Fontanny iskier',
-    img: { src: '/img/fontanny.jpg', w: 1200, h: 800 },
+    img: { src: '/img/fontanny.webp', w: 1200, h: 800 },
     desc: 'Ozdobny stelaż, z którego wydobywają się migoczące iskry. Efektowne widowisko przy pierwszym tańcu czy torcie.',
   },
   {
     key: 'dmuchance',
     name: 'Dmuchańce dla dzieci',
-    img: { src: '/img/booth-balloons.jpg', w: 239, h: 520 },
-    desc: 'Radosna zabawa dla najmłodszych gości, by każdy świętował na swój sposób.',
+    img: { src: '/img/dmuchance-slonik.webp', w: 1200, h: 900 },
+    desc: 'Ogromne, kolorowe zjeżdżalnie dmuchane w motywie safari i pandy, nawet do 6,6 m wysokości. Radosna zabawa dla najmłodszych gości we współpracy z LIL-JOY.',
     kids: true,
   },
 ]
@@ -170,14 +168,16 @@ const PACKAGES = [
 ]
 
 const GALLERY: { src: string; alt: string; w: number; h: number }[] = [
-  { src: '/img/dym-wide.jpg', alt: 'Para w pierwszym tańcu w ciężkim dymie', w: 1200, h: 899 },
-  { src: '/img/love-floor.jpg', alt: 'Podświetlany napis LOVE na sali weselnej', w: 674, h: 900 },
-  { src: '/img/bridesmaids.jpg', alt: 'Druhny z gazetą ślubną w dłoniach', w: 733, h: 1100 },
-  { src: '/img/serce-led.jpg', alt: 'Duże podświetlane serce LED', w: 825, h: 1100 },
-  { src: '/img/gadgets.jpg', alt: 'Kolorowe gadżety i rekwizyty do fotobudki', w: 674, h: 900 },
-  { src: '/img/venue.jpg', alt: 'Elegancka sala weselna z dekoracjami', w: 1200, h: 800 },
-  { src: '/img/fontanny.jpg', alt: 'Fontanny zimnych iskier przy torcie weselnym', w: 1200, h: 800 },
-  { src: '/img/love-garden.jpg', alt: 'Podświetlany napis LOVE w plenerze', w: 999, h: 749 },
+  { src: '/img/dym-wide.webp', alt: 'Para w pierwszym tańcu w ciężkim dymie', w: 1200, h: 899 },
+  { src: '/img/love-floor.webp', alt: 'Podświetlany napis LOVE na sali weselnej', w: 674, h: 900 },
+  { src: '/img/bridesmaids.webp', alt: 'Druhny z gazetą ślubną w dłoniach', w: 733, h: 1100 },
+  { src: '/img/serce-led.webp', alt: 'Duże podświetlane serce LED', w: 825, h: 1100 },
+  { src: '/img/gadgets.webp', alt: 'Kolorowe gadżety i rekwizyty do fotobudki', w: 674, h: 900 },
+  { src: '/img/venue.webp', alt: 'Elegancka sala weselna z dekoracjami', w: 1200, h: 800 },
+  { src: '/img/fontanny.webp', alt: 'Fontanny zimnych iskier przy torcie weselnym', w: 1200, h: 800 },
+  { src: '/img/love-garden.webp', alt: 'Podświetlany napis LOVE w plenerze', w: 999, h: 749 },
+  { src: '/img/dmuchance-liljoy.webp', alt: 'Duże dmuchane zjeżdżalnie w motywie safari i pandy', w: 1200, h: 900 },
+  { src: '/img/dmuchance-dzieci.webp', alt: 'Dzieci bawiące się na dmuchanej zjeżdżalni safari', w: 900, h: 1195 },
 ]
 
 /* Godziny do wyboru w rezerwacji (co 30 minut, 09:00–23:30). */
@@ -235,9 +235,11 @@ function useReveal() {
 }
 
 /* ---------- App ---------- */
-// Klucz z panelu web3forms.com (publiczny — trafia do bundla; chroniony filtrem spamu + honeypotem).
-// Lokalnie: .env.local → VITE_WEB3FORMS_KEY. Na produkcji: zmienna środowiskowa w Vercel.
-const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
+// Endpoint wysyłki formularza. Domyślnie Formsubmit.co — darmowy, bez limitu, bez konta.
+// Można nadpisać przez VITE_FORM_ENDPOINT (np. zahashowany kod Formsubmit lub własny endpoint).
+const FORM_ENDPOINT =
+  (import.meta.env.VITE_FORM_ENDPOINT as string | undefined) ||
+  'https://formsubmit.co/ajax/fotoofann@gmail.com'
 
 type Form = {
   date: string
@@ -264,6 +266,27 @@ function App() {
     message: '',
   })
 
+  // Lightbox galerii: indeks otwartego zdjęcia (null = zamknięty).
+  const [lightbox, setLightbox] = useState<number | null>(null)
+  const navLb = (d: number) =>
+    setLightbox((i) => (i === null ? i : (i + d + GALLERY.length) % GALLERY.length))
+
+  useEffect(() => {
+    if (lightbox === null) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightbox(null)
+      else if (e.key === 'ArrowRight') navLb(1)
+      else if (e.key === 'ArrowLeft') navLb(-1)
+    }
+    document.addEventListener('keydown', onKey)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prevOverflow
+    }
+  }, [lightbox])
+
   const field =
     (name: keyof Form) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -287,13 +310,13 @@ function App() {
         .map((s) => s.name)
         .join(', ') || '(nie wybrano)'
     try {
-      const res = await fetch('https://api.web3forms.com/submit', {
+      const res = await fetch(FORM_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          access_key: WEB3FORMS_KEY,
-          subject: 'Nowe zapytanie o rezerwację — FotoFann',
-          from_name: form.name || 'Formularz FotoFann',
+          _subject: 'Nowe zapytanie o rezerwację — FotoFann',
+          _template: 'table',
+          _captcha: 'false',
           Atrakcje: services,
           Data: form.date || '(nie podano)',
           Godzina: form.time || '(nie podano)',
@@ -304,7 +327,7 @@ function App() {
         }),
       })
       const data = await res.json()
-      setStatus(data.success ? 'ok' : 'error')
+      setStatus(data.success === true || data.success === 'true' ? 'ok' : 'error')
     } catch {
       setStatus('error')
     }
@@ -319,13 +342,13 @@ function App() {
       {/* NAV */}
       <nav className="nav" aria-label="Nawigacja główna">
         <a href="#top" className="nav__brand" aria-label="FotoFann — strona główna">
-          <span className="brand-mark">
-            <LogoMark size={26} />
-          </span>
-          <span className="brand-text">
-            <span className="brand-name">FOTOFANN</span>
-            <span className="brand-sub">usługi rozrywkowe</span>
-          </span>
+          <img
+            src="/logo-on-light.png"
+            alt="FotoFann — usługi rozrywkowe"
+            className="nav__logo"
+            width={786}
+            height={446}
+          />
         </a>
         <div className="nav__links">
           <a href="#oferta" className="navlink">
@@ -347,7 +370,7 @@ function App() {
         {/* HERO */}
         <header id="top" className="hero" aria-labelledby="hero-title">
           <img
-            src="/img/hero-dance-smoke.jpg"
+            src="/img/hero-dance-smoke.webp"
             alt="Nowożeńcy w pierwszym tańcu otoczeni ciężkim dymem i konfetti"
             className="hero__bg"
             width={1400}
@@ -356,13 +379,6 @@ function App() {
           />
           <div className="hero__overlay" />
           <div className="hero__inner reveal">
-            <div className="hero__logo">
-              <span className="brand-mark">
-                <LogoMark size={46} />
-              </span>
-              <span className="hero__logo-name">FOTOFANN</span>
-              <span className="hero__logo-sub">usługi rozrywkowe</span>
-            </div>
             <h1 id="hero-title">
               Atrakcje, które
               <br />
@@ -409,7 +425,7 @@ function App() {
           </div>
           <div className="worlds">
             <article className="world reveal">
-              <img src="/img/dance-smoke.jpg" alt="Eleganckie wesele w ciężkim dymie" width={780} height={900} loading="lazy" />
+              <img src="/img/dance-smoke.webp" alt="Eleganckie wesele w ciężkim dymie" width={780} height={900} loading="lazy" />
               <div className="world__grad" />
               <div className="world__body">
                 <span className="world__script">Elegancja weselna</span>
@@ -421,7 +437,7 @@ function App() {
               </div>
             </article>
             <article className="world reveal">
-              <img src="/img/booth-balloons.jpg" alt="Dzieci bawiące się na przyjęciu" width={239} height={520} loading="lazy" />
+              <img src="/img/dmuchance-dzieci.webp" alt="Dzieci bawiące się na dmuchanej zjeżdżalni" width={900} height={1195} loading="lazy" />
               <div className="world__grad" />
               <div className="world__body">
                 <span className="world__script">Radość dla dzieci</span>
@@ -485,7 +501,7 @@ function App() {
             <div className="why__media reveal">
               <img
                 className="photo-a"
-                src="/img/photostrips.jpg"
+                src="/img/photostrips.webp"
                 alt="Rekwizyty i gadżety do zdjęć w fotobudce"
                 width={674}
                 height={900}
@@ -493,7 +509,7 @@ function App() {
               />
               <img
                 className="photo-b"
-                src="/img/led-frame.jpg"
+                src="/img/led-frame.webp"
                 alt="Fotobudka z podświetlaną ramą LED"
                 width={675}
                 height={900}
@@ -512,17 +528,18 @@ function App() {
             <h2 id="galeria-title">Galeria realizacji</h2>
             <p>Chwile, które dla Was uwieczniliśmy.</p>
           </div>
-          <div className="gallery reveal">
+          <div className="gallery">
             {GALLERY.map((g, i) => (
-              <img
+              <button
+                type="button"
                 key={g.src}
-                src={g.src}
-                alt={g.alt}
-                width={g.w}
-                height={g.h}
-                loading="lazy"
+                className="gallery__item reveal"
                 style={{ '--i': i } as React.CSSProperties}
-              />
+                onClick={() => setLightbox(i)}
+                aria-label={`Powiększ zdjęcie: ${g.alt}`}
+              >
+                <img src={g.src} alt={g.alt} width={g.w} height={g.h} loading="lazy" />
+              </button>
             ))}
           </div>
         </section>
@@ -681,7 +698,7 @@ function App() {
                       required
                       value={form.contact}
                       onChange={field('contact')}
-                      placeholder="503 657 992 / mail@…"
+                      placeholder="504 579 380 / mail@…"
                     />
                   </div>
                 </div>
@@ -706,7 +723,7 @@ function App() {
                 {status === 'error' && (
                   <p className="form-error" role="alert">
                     Coś poszło nie tak przy wysyłce. Zadzwoń:{' '}
-                    <a href="tel:+48503657992">503 657 992</a> lub spróbuj ponownie.
+                    <a href="tel:+48504579380">504 579 380</a> lub spróbuj ponownie.
                   </p>
                 )}
               </form>
@@ -720,13 +737,13 @@ function App() {
         <div className="footer__grid">
           <div className="footer__brand">
             <div className="brand-row">
-              <span className="brand-mark">
-                <LogoMark size={26} />
-              </span>
-              <span className="brand-text">
-                <span className="brand-name">FOTOFANN</span>
-                <span className="brand-sub">usługi rozrywkowe</span>
-              </span>
+              <img
+                src="/logo-on-dark.png"
+                alt="FotoFann — usługi rozrywkowe"
+                className="footer__logo"
+                width={786}
+                height={446}
+              />
             </div>
             <p>
               Atrakcje i dekoracje na wesela, przyjęcia oraz imprezy dla dzieci. Krzeszowice i okolice,
@@ -736,11 +753,17 @@ function App() {
           <div>
             <h2 className="footer__heading">Kontakt</h2>
             <div className="footer__links">
-              <a href="tel:+48503657992">
+              <a href="tel:+48504579380">
                 <span aria-hidden="true">
                   <IconPhone />
                 </span>{' '}
-                503 657 992
+                504 579 380
+              </a>
+              <a href="tel:+48507843103">
+                <span aria-hidden="true">
+                  <IconPhone />
+                </span>{' '}
+                507 843 103
               </a>
               <a href="mailto:fotoofann@gmail.com">
                 <span aria-hidden="true">
@@ -765,7 +788,7 @@ function App() {
                 @_fotofann__
               </a>
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/profile.php?id=100078145622944"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="FotoFann na Facebooku"
@@ -775,12 +798,25 @@ function App() {
                 </span>{' '}
                 Fotobudka fotofann
               </a>
+              <a
+                href="https://www.facebook.com/lil.joy.dmuchance"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LIL-JOY Dmuchańce na Facebooku"
+              >
+                <span aria-hidden="true">
+                  <IconFb />
+                </span>{' '}
+                LIL-JOY Dmuchańce
+              </a>
             </div>
           </div>
         </div>
         <div className="footer__close">
           <p className="footer__close-script">Zapraszamy do rezerwacji</p>
-          <p className="footer__copy">© 2025 FotoFann · usługi rozrywkowe · Krzeszowice</p>
+          <p className="footer__copy">
+            © {new Date().getFullYear()} FotoFann · usługi rozrywkowe · Krzeszowice
+          </p>
           <p className="footer__credit">
             made by{' '}
             <a href="https://jakubkurdziel.pl/" target="_blank" rel="noopener noreferrer">
@@ -789,6 +825,56 @@ function App() {
           </p>
         </div>
       </footer>
+
+      {/* LIGHTBOX */}
+      {lightbox !== null && (
+        <div
+          className="lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Powiększone zdjęcie"
+          onClick={() => setLightbox(null)}
+        >
+          <button
+            type="button"
+            className="lightbox__close"
+            onClick={() => setLightbox(null)}
+            aria-label="Zamknij"
+            autoFocus
+          >
+            <IconClose />
+          </button>
+          <button
+            type="button"
+            className="lightbox__nav lightbox__nav--prev"
+            onClick={(e) => {
+              e.stopPropagation()
+              navLb(-1)
+            }}
+            aria-label="Poprzednie zdjęcie"
+          >
+            <IconChevron dir="left" />
+          </button>
+          <img
+            className="lightbox__img"
+            src={GALLERY[lightbox].src}
+            alt={GALLERY[lightbox].alt}
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            type="button"
+            className="lightbox__nav lightbox__nav--next"
+            onClick={(e) => {
+              e.stopPropagation()
+              navLb(1)
+            }}
+            aria-label="Następne zdjęcie"
+          >
+            <IconChevron dir="right" />
+          </button>
+          <p className="lightbox__caption">{GALLERY[lightbox].alt}</p>
+        </div>
+      )}
     </div>
   )
 }
