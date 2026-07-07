@@ -271,11 +271,12 @@ function useReveal() {
 }
 
 /* ---------- App ---------- */
-// Endpoint wysyłki formularza. Domyślnie Formsubmit.co — darmowy, bez limitu, bez konta.
-// Można nadpisać przez VITE_FORM_ENDPOINT (np. zahashowany kod Formsubmit lub własny endpoint).
-const FORM_ENDPOINT =
-  (import.meta.env.VITE_FORM_ENDPOINT as string | undefined) ||
-  'https://formsubmit.co/ajax/fotoofann@gmail.com'
+// Wysyłka formularza przez Web3Forms. Access key jest publiczny (przeznaczony do kodu front-endu).
+// Można nadpisać przez VITE_WEB3FORMS_KEY (np. inny klucz na produkcji).
+const FORM_ENDPOINT = 'https://api.web3forms.com/submit'
+const WEB3FORMS_KEY =
+  (import.meta.env.VITE_WEB3FORMS_KEY as string | undefined) ||
+  'c3e91cd5-eeca-4f6a-a151-7cb24d098cda'
 
 type Form = {
   date: string
@@ -350,9 +351,9 @@ function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          _subject: 'Nowe zapytanie o rezerwację — FotoFann',
-          _template: 'table',
-          _captcha: 'false',
+          access_key: WEB3FORMS_KEY,
+          subject: 'Nowe zapytanie o rezerwację — FotoFann',
+          from_name: 'Formularz FotoFann',
           Atrakcje: services,
           Data: form.date || '(nie podano)',
           Godzina: form.time || '(nie podano)',
@@ -457,35 +458,56 @@ function App() {
               Niezależnie od okazji, dbamy o ten sam, dopracowany detal.
             </p>
           </div>
-          <div className="worlds">
-            <article className="world reveal">
-              <img src="/img/dance-smoke.webp" alt="Eleganckie wesele w ciężkim dymie" width={780} height={900} loading="lazy" />
+          {/* Desktop: bezszwowy baner z napisami na trzech strefach */}
+          <div
+            className="worlds-pano reveal"
+            role="img"
+            aria-label="Trzy światy FotoFann: dmuchańce dla dzieci, pierwszy taniec w ciężkim dymie oraz impreza z fotobudką 360 stopni"
+          >
+            <img src="/img/worlds-banner.webp" alt="" width={1600} height={679} loading="lazy" />
+            <div className="worlds-pano__labels" aria-hidden="true">
+              <div className="wlabel">
+                <span className="world__script">Radość dla dzieci</span>
+                <h3>Dla najmłodszych</h3>
+              </div>
+              <div className="wlabel">
+                <span className="world__script">Elegancja weselna</span>
+                <h3>Dla Pary Młodej</h3>
+              </div>
+              <div className="wlabel">
+                <span className="world__script">Każda okazja</span>
+                <h3>Imprezy okolicznościowe</h3>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile: trzy wycinki w pionie, z opisami */}
+          <div className="worlds-stack reveal">
+            <article className="world">
+              <img src="/img/worlds-wedding.webp" alt="Pierwszy taniec Pary Młodej w ciężkim dymie" width={700} height={894} loading="lazy" />
               <div className="world__grad" />
               <div className="world__body">
                 <span className="world__script">Elegancja weselna</span>
                 <h3>Dla Pary Młodej</h3>
-                <p>
-                  Fotobudki, ciężki dym, podświetlane dekoracje i fontanny iskier. Romantyczna, premium
-                  atmosfera Waszego wieczoru.
-                </p>
+                <p>Fotobudki, ciężki dym, podświetlane dekoracje i fontanny iskier. Premium atmosfera wieczoru.</p>
               </div>
             </article>
-            <article className="world reveal">
-              <img src="/img/dmuchance-dzieci.webp" alt="Dzieci bawiące się na dmuchanej zjeżdżalni" width={900} height={1195} loading="lazy" />
+            <article className="world">
+              <img src="/img/worlds-kids.webp" alt="Dzieci bawiące się przy dmuchanej zjeżdżalni" width={700} height={894} loading="lazy" />
               <div className="world__grad" />
               <div className="world__body">
                 <span className="world__script">Radość dla dzieci</span>
                 <h3>Dla najmłodszych</h3>
-                <p>Dmuchańce, fotobudka i mnóstwo gadżetów. Uśmiech najmłodszych gości w klasie wyżej.</p>
+                <p>Dmuchańce, fotobudka i mnóstwo gadżetów. Uśmiech najmłodszych gości.</p>
               </div>
             </article>
-            <article className="world reveal">
-              <img src="/img/venue.webp" alt="Sala przygotowana na przyjęcie okolicznościowe" width={1200} height={800} loading="lazy" />
+            <article className="world">
+              <img src="/img/worlds-party.webp" alt="Impreza z fotobudką 360 stopni wieczorem" width={700} height={892} loading="lazy" />
               <div className="world__grad" />
               <div className="world__body">
                 <span className="world__script">Każda okazja</span>
                 <h3>Imprezy okolicznościowe</h3>
-                <p>Osiemnastki, komunie, wesela, studniówki i inne przyjęcia. Oprawa dopasowana do okazji.</p>
+                <p>Osiemnastki, komunie, wesela, studniówki i inne przyjęcia.</p>
               </div>
             </article>
           </div>

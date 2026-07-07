@@ -408,13 +408,66 @@ button {
   margin: 0;
 }
 
-/* ---------- Two worlds ---------- */
-.worlds {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-  max-width: 1080px;
+/* ---------- Three worlds ---------- */
+/* Desktop: seamless banner with labels over the three zones */
+.worlds-pano {
+  position: relative;
+  max-width: 1180px;
   margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 50px -28px rgba(31, 36, 51, 0.5);
+}
+.worlds-pano > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.worlds-pano__labels {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.wlabel {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  text-align: center;
+  padding: clamp(14px, 2vw, 26px) clamp(6px, 1vw, 14px);
+  color: #fff;
+  background: linear-gradient(180deg, rgba(18, 20, 28, 0) 45%, rgba(18, 20, 28, 0.78) 100%);
+}
+.wlabel .world__script {
+  color: var(--gold-2);
+  font-size: clamp(16px, 2vw, 26px);
+  line-height: 1;
+}
+.wlabel h3 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: clamp(15px, 2.1vw, 25px);
+  white-space: nowrap;
+  margin: 6px 0 0;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+}
+
+/* Mobile: three stacked slices */
+.worlds-stack {
+  display: none;
+}
+@media (max-width: 860px) {
+  .worlds-pano {
+    display: none;
+  }
+  .worlds-stack {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
 }
 .world {
   position: relative;
