@@ -402,10 +402,10 @@ function App() {
         <header id="top" className="hero" aria-labelledby="hero-title">
           <img
             src="/img/hero-dance-smoke.webp"
-            alt="Nowożeńcy w pierwszym tańcu otoczeni ciężkim dymem i konfetti"
+            alt="Nowożeńcy w pierwszym tańcu w ciężkim dymie, otoczeni gośćmi i konfetti"
             className="hero__bg"
-            width={1400}
-            height={962}
+            width={1500}
+            height={998}
             fetchPriority="high"
           />
           <div className="hero__overlay" />
