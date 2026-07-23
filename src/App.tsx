@@ -46,24 +46,6 @@ function Diamond() {
   )
 }
 
-function CheckMark() {
-  return (
-    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="12" r="10.4" stroke="currentColor" strokeWidth={1.1} opacity={0.35} />
-      <path d="M7.5 12.4l3 3 6-6.4" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function InfoDot() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth={1.4} />
-      <path d="M12 11v5M12 8h.01" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" />
-    </svg>
-  )
-}
-
 function IconPhone() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
@@ -216,14 +198,6 @@ const GALLERY: { src: string; alt: string; w: number; h: number }[] = [
   { src: '/img/dmuchance-dzieci.webp', alt: 'Dzieci bawiące się na dmuchanej zjeżdżalni safari', w: 900, h: 1195 },
 ]
 
-/* Godziny do wyboru w rezerwacji (co 30 minut, 09:00–23:30). */
-const TIMES = Array.from({ length: 30 }, (_, i) => {
-  const total = 9 * 60 + i * 30
-  const h = Math.floor(total / 60)
-  const m = total % 60
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
-})
-
 /* ---------- Reveal on scroll ---------- */
 function useReveal() {
   const ref = useRef<HTMLDivElement>(null)
@@ -270,38 +244,44 @@ function useReveal() {
   return ref
 }
 
-/* ---------- App ---------- */
-// Wysyłka formularza przez Web3Forms. Access key jest publiczny (przeznaczony do kodu front-endu).
-// Można nadpisać przez VITE_WEB3FORMS_KEY (np. inny klucz na produkcji).
-const FORM_ENDPOINT = 'https://api.web3forms.com/submit'
-const WEB3FORMS_KEY =
-  (import.meta.env.VITE_WEB3FORMS_KEY as string | undefined) ||
-  'c3e91cd5-eeca-4f6a-a151-7cb24d098cda'
+/* ---------- Bookero widget ---------- */
+// System rezerwacji Bookero (plugin v2). ID konta z panelu Bookero.
+const BOOKERO_ID = '7FxNrmwImX6n'
+const BOOKERO_SRC = 'https://cdn.bookero.pl/plugin/v2/js/bookero-compiled.js'
 
-type Form = {
-  date: string
-  time: string
-  place: string
-  name: string
-  contact: string
-  message: string
+function BookeroWidget() {
+  // React zarządza tylko pustym wrapperem; węzeł #bookero tworzymy imperatywnie w środku,
+  // żeby Bookero mógł nim swobodnie manipulować, a re-rendery Reacta (np. lightbox) go nie ruszały.
+  const hostRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const host = hostRef.current
+    if (!host || host.querySelector('#bookero')) return
+    const target = document.createElement('div')
+    target.id = 'bookero'
+    host.appendChild(target)
+    // Konfiguracja odczytywana przez skrypt Bookero (zmienna globalna).
+    ;(window as unknown as { bookero_config?: Record<string, unknown> }).bookero_config = {
+      id: BOOKERO_ID,
+      container: 'bookero',
+      type: 'full',
+      position: '',
+      plugin_css: true,
+      lang: 'pl',
+    }
+    // Skrypt wstrzykujemy tylko raz (odporne na podwójny mount w React StrictMode).
+    if (!document.querySelector(`script[src="${BOOKERO_SRC}"]`)) {
+      const s = document.createElement('script')
+      s.src = BOOKERO_SRC
+      s.async = true
+      document.body.appendChild(s)
+    }
+  }, [])
+  return <div ref={hostRef} />
 }
 
-type Status = 'idle' | 'sending' | 'ok' | 'error'
-
+/* ---------- App ---------- */
 function App() {
   const containerRef = useReveal()
-  const [selected, setSelected] = useState<string[]>([])
-  const [status, setStatus] = useState<Status>('idle')
-  const [hp, setHp] = useState('')
-  const [form, setForm] = useState<Form>({
-    date: '',
-    time: '',
-    place: '',
-    name: '',
-    contact: '',
-    message: '',
-  })
 
   // Lightbox galerii: indeks otwartego zdjęcia (null = zamknięty).
   const [lightbox, setLightbox] = useState<number | null>(null)
@@ -323,52 +303,6 @@ function App() {
       document.body.style.overflow = prevOverflow
     }
   }, [lightbox])
-
-  const field =
-    (name: keyof Form) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-      const value = e.target.value
-      setForm((s) => ({ ...s, [name]: value }))
-    }
-
-  const toggle = (key: string) =>
-    setSelected((s) => (s.includes(key) ? s.filter((k) => k !== key) : [...s, key]))
-
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (hp) {
-      // Honeypot wypełniony = bot. Udajemy sukces i nic nie wysyłamy.
-      setStatus('ok')
-      return
-    }
-    setStatus('sending')
-    const services =
-      SERVICES.filter((s) => selected.includes(s.key))
-        .map((s) => s.name)
-        .join(', ') || '(nie wybrano)'
-    try {
-      const res = await fetch(FORM_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_KEY,
-          subject: 'Nowe zapytanie o rezerwację — FotoFann',
-          from_name: 'Formularz FotoFann',
-          Atrakcje: services,
-          Data: form.date || '(nie podano)',
-          Godzina: form.time || '(nie podano)',
-          Miejscowość: form.place || '(nie podano)',
-          Imię: form.name || '(nie podano)',
-          Kontakt: form.contact,
-          Wiadomość: form.message || '(brak)',
-        }),
-      })
-      const data = await res.json()
-      setStatus(data.success === true || data.success === 'true' ? 'ok' : 'error')
-    } catch {
-      setStatus('error')
-    }
-  }
 
   return (
     <div ref={containerRef}>
@@ -647,152 +581,12 @@ function App() {
             </div>
             <h2 id="rezerwacja-title">Zarezerwuj termin</h2>
             <p>
-              Zaznacz interesujące Was atrakcje i wybierz datę, a odezwiemy się z wyceną i potwierdzeniem.
+              Wybierz atrakcje oraz dostępny termin, a rezerwację potwierdzisz od razu online.
             </p>
           </div>
 
           <div className="booking__card reveal">
-            {status === 'ok' ? (
-              <div className="thanks" role="status" aria-live="polite">
-                <div className="thanks__icon" aria-hidden="true">
-                  <CheckMark />
-                </div>
-                <h3>Dziękujemy!</h3>
-                <p>Zapytanie zostało wysłane. Skontaktujemy się z Wami najszybciej, jak to możliwe.</p>
-                <p className="thanks__script">Do usłyszenia!</p>
-              </div>
-            ) : (
-              <form className="form" onSubmit={onSubmit}>
-                <input
-                  type="text"
-                  name="website"
-                  className="hp-field"
-                  tabIndex={-1}
-                  autoComplete="off"
-                  aria-hidden="true"
-                  value={hp}
-                  onChange={(e) => setHp(e.target.value)}
-                />
-                <fieldset className="chips-field">
-                  <legend className="label label--chips">Wybierz atrakcje</legend>
-                  <div className="chips">
-                    {SERVICES.map((s) => (
-                      <button
-                        type="button"
-                        key={s.key}
-                        onClick={() => toggle(s.key)}
-                        className={selected.includes(s.key) ? 'chip is-active' : 'chip'}
-                        aria-pressed={selected.includes(s.key)}
-                      >
-                        {s.name}
-                      </button>
-                    ))}
-                  </div>
-                </fieldset>
-
-                <div className="field-row">
-                  <div>
-                    <label className="label" htmlFor="f-date">
-                      Data
-                    </label>
-                    <input id="f-date" className="input" type="date" value={form.date} onChange={field('date')} />
-                  </div>
-                  <div>
-                    <label className="label" htmlFor="f-time">
-                      Godzina
-                    </label>
-                    <div className="select-wrap">
-                      <select id="f-time" className="input select" value={form.time} onChange={field('time')}>
-                        <option value="">Wybierz godzinę</option>
-                        {TIMES.map((t) => (
-                          <option key={t} value={t}>
-                            {t}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="label" htmlFor="f-place">
-                    Miejscowość
-                  </label>
-                  <input
-                    id="f-place"
-                    className="input"
-                    type="text"
-                    value={form.place}
-                    onChange={field('place')}
-                    placeholder="np. Krzeszowice, sala weselna…"
-                    aria-describedby="place-hint"
-                  />
-                  <p className="hint" id="place-hint">
-                    <span aria-hidden="true">
-                      <InfoDot />
-                    </span>
-                    Dojazd ponad 20 km od Krzeszowic, doliczamy dodatkową opłatę.
-                  </p>
-                </div>
-
-                <div className="field-row">
-                  <div>
-                    <label className="label" htmlFor="f-name">
-                      Imię
-                    </label>
-                    <input
-                      id="f-name"
-                      className="input"
-                      type="text"
-                      autoComplete="name"
-                      required
-                      value={form.name}
-                      onChange={field('name')}
-                      placeholder="Twoje imię"
-                    />
-                  </div>
-                  <div>
-                    <label className="label" htmlFor="f-contact">
-                      Telefon lub e-mail
-                    </label>
-                    <input
-                      id="f-contact"
-                      className="input"
-                      type="text"
-                      inputMode="tel"
-                      required
-                      value={form.contact}
-                      onChange={field('contact')}
-                      placeholder="504 579 380 / mail@…"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="label" htmlFor="f-message">
-                    Wiadomość <span className="opt">(opcjonalnie)</span>
-                  </label>
-                  <textarea
-                    id="f-message"
-                    className="textarea"
-                    rows={3}
-                    value={form.message}
-                    onChange={field('message')}
-                    placeholder="Liczba gości, rodzaj przyjęcia, pytania…"
-                  />
-                </div>
-
-                <button type="submit" className="submit" disabled={status === 'sending'}>
-                  {status === 'sending' ? 'Wysyłanie…' : 'Wyślij zapytanie'}
-                </button>
-                {status === 'error' && (
-                  <p className="form-error" role="alert">
-                    Coś poszło nie tak przy wysyłce. Zadzwoń:{' '}
-                    <a href="tel:+48504579380">504 579 380</a> lub spróbuj ponownie.
-                  </p>
-                )}
-              </form>
-            )}
+            <BookeroWidget />
           </div>
         </section>
       </main>
@@ -824,11 +618,11 @@ function App() {
                 </span>{' '}
                 Wiktor · 507 843 103
               </a>
-              <a href="mailto:fotoofann@gmail.com">
+              <a href="mailto:kontakt.fotofann@gmail.com">
                 <span aria-hidden="true">
                   <IconMail />
                 </span>{' '}
-                fotoofann@gmail.com
+                kontakt.fotofann@gmail.com
               </a>
             </div>
           </div>
