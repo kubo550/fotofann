@@ -129,7 +129,7 @@ button {
   }
   .brand-mark,
   .hero__scroll-cue,
-  .hero__bg {
+  .hero__media {
     animation: none !important;
   }
   html {
@@ -266,13 +266,36 @@ button {
 /* ---------- Hero ---------- */
 .hero {
   position: relative;
-  min-height: 92vh;
+  min-height: 92vh; /* fallback */
+  min-height: min(92svh, 900px);
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   padding: 90px clamp(20px, 6vw, 40px) 80px;
   overflow: hidden;
+}
+
+/* Media layer: blurred inline placeholder (LQIP) → full photo fades in on top.
+   The LQIP is a 24px WebP baked into the CSS, so it paints on first frame
+   with zero extra requests. */
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  --hero-lqip: url('data:image/webp;base64,UklGRswAAABXRUJQVlA4IMAAAADQBACdASoYABAAPrVInkmnJCKhMAgA4BaJQBOmUDX/xbBzfQz0vX+rpTkyIxhSAAD+8EpOEIL3clm9k9Bre+DB+/YB1ggrf7yEJ15Dv4n6XbHkM7SefZFPZi7MM0nNDsm042AFurIeg06bEqjG+n5HWaAy9pzmc0iZC7j+PrnrpdFDEneZob2DxxmOVL9k/xd/qQtjoUI6239r2LzCctoCrin28n6cbF9n51HiW0gtNE/a3ubJCaEEI7RzWijQAAA=');
+  animation: heroZoom 1.9s cubic-bezier(0.16, 0.8, 0.3, 1) both;
+}
+.hero__media::before {
+  content: '';
+  position: absolute;
+  inset: -4%;
+  background-image: var(--hero-lqip);
+  background-size: cover;
+  background-position: center 35%;
+  filter: blur(22px) saturate(1.15);
+  transform: scale(1.06);
 }
 .hero__bg {
   position: absolute;
@@ -281,8 +304,19 @@ button {
   height: 100%;
   object-fit: cover;
   object-position: center 35%;
-  z-index: 0;
-  animation: heroZoom 1.9s cubic-bezier(0.16, 0.8, 0.3, 1) both;
+  opacity: 0;
+  transition: opacity 0.55s ease;
+}
+.hero__media.is-loaded .hero__bg {
+  opacity: 1;
+}
+/* Drop the blurred layer once the photo is up — frees the blur compositing layer. */
+.hero__media.is-loaded::before {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.55s ease 0.1s,
+    visibility 0s linear 0.65s;
 }
 .hero__overlay {
   position: absolute;
@@ -372,6 +406,33 @@ button {
 }
 .hero__scroll-cue:hover {
   color: #fff;
+}
+
+/* Phones: 3:4 portrait crop of the same photo, framed on the couple. */
+@media (max-width: 700px) {
+  .hero {
+    min-height: 88vh; /* fallback */
+    min-height: min(88svh, 760px);
+    padding: 64px 22px 96px;
+  }
+  .hero__media {
+    --hero-lqip: url('data:image/webp;base64,UklGRuQAAABXRUJQVlA4INgAAADQBQCdASoUABoAPrVSo00nJKMiKAgA4BaJYwCsM1YnAVOucJ0nLi8Chzg64DKpPheyaiVJJYAAAP7trlfEVeiEmFyjET9HAYzlN/TnO52rNT6qZaUC8J5rBNO60RBRxtlLR7WlqtZXVWxjlxC4RMWrY66zYdoRf4wgsqFWMDqJGQgBNuoOzreX0isM4jRr8L5YzMy9vn45fpDYlY+R9HQOwQNo0p8DRFo4p5USjAbfKoq5aCn/joguF60ojnErRZNd5vcJb4xgIp+337PWW0p8a7FfwQbpYAA=');
+  }
+  .hero__media::before {
+    background-position: center 30%;
+  }
+  .hero__bg {
+    object-position: center 30%;
+  }
+  /* More bottom shade on mobile — the text block sits lower over the smoke. */
+  .hero__overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(18, 20, 28, 0.42) 0%,
+      rgba(18, 20, 28, 0.26) 30%,
+      rgba(18, 20, 28, 0.62) 100%
+    );
+  }
 }
 
 /* ---------- Sections ---------- */

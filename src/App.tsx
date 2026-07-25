@@ -291,6 +291,8 @@ type Status = 'idle' | 'sending' | 'ok' | 'error'
 
 function App() {
   const containerRef = useReveal()
+  const heroImgRef = useRef<HTMLImageElement>(null)
+  const [heroLoaded, setHeroLoaded] = useState(false)
   const [selected, setSelected] = useState<string[]>([])
   const [status, setStatus] = useState<Status>('idle')
   const [hp, setHp] = useState('')
@@ -302,6 +304,11 @@ function App() {
     contact: '',
     message: '',
   })
+
+  // Gdy hero jest już w cache, load może odpalić zanim React podepnie onLoad.
+  useEffect(() => {
+    if (heroImgRef.current?.complete) setHeroLoaded(true)
+  }, [])
 
   // Lightbox galerii: indeks otwartego zdjęcia (null = zamknięty).
   const [lightbox, setLightbox] = useState<number | null>(null)
@@ -400,14 +407,35 @@ function App() {
       <main id="main">
         {/* HERO */}
         <header id="top" className="hero" aria-labelledby="hero-title">
-          <img
-            src="/img/hero-dance-smoke.webp"
-            alt="Nowożeńcy w pierwszym tańcu w ciężkim dymie, otoczeni gośćmi i konfetti"
-            className="hero__bg"
-            width={1500}
-            height={998}
-            fetchPriority="high"
-          />
+          <div className={`hero__media${heroLoaded ? ' is-loaded' : ''}`}>
+            <picture>
+              <source
+                media="(max-width: 700px)"
+                srcSet="/img/hero-dance-smoke-tall-576.webp 576w, /img/hero-dance-smoke-tall-768.webp 768w"
+                sizes="100vw"
+                width={768}
+                height={1023}
+              />
+              <source
+                srcSet="/img/hero-dance-smoke-900.webp 900w, /img/hero-dance-smoke-1200.webp 1200w, /img/hero-dance-smoke-1537.webp 1537w"
+                sizes="100vw"
+                width={1537}
+                height={1023}
+              />
+              <img
+                ref={heroImgRef}
+                src="/img/hero-dance-smoke-1537.webp"
+                alt="Nowożeńcy w pierwszym tańcu w ciężkim dymie, otoczeni gośćmi i konfetti"
+                className="hero__bg"
+                width={1537}
+                height={1023}
+                fetchPriority="high"
+                decoding="async"
+                onLoad={() => setHeroLoaded(true)}
+                onError={() => setHeroLoaded(true)}
+              />
+            </picture>
+          </div>
           <div className="hero__overlay" />
           <div className="hero__inner reveal">
             <h1 id="hero-title">

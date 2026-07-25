@@ -55,8 +55,23 @@
       rel="stylesheet"
     />
 
-    <!-- LCP image preload -->
-    <link rel="preload" as="image" href="/img/hero-dance-smoke.webp" fetchpriority="high" />
+    <!-- LCP image preload — musi odpowiadać <picture> w hero, inaczej pobierze się drugi plik. -->
+    <link
+      rel="preload"
+      as="image"
+      media="(max-width: 700px)"
+      imagesrcset="/img/hero-dance-smoke-tall-576.webp 576w, /img/hero-dance-smoke-tall-768.webp 768w"
+      imagesizes="100vw"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      as="image"
+      media="(min-width: 701px)"
+      imagesrcset="/img/hero-dance-smoke-900.webp 900w, /img/hero-dance-smoke-1200.webp 1200w, /img/hero-dance-smoke-1537.webp 1537w"
+      imagesizes="100vw"
+      fetchpriority="high"
+    />
 
     <!-- Structured data: LocalBusiness -->
     <script type="application/ld+json">
