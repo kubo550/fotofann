@@ -255,26 +255,48 @@ function BookeroWidget() {
   const hostRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const host = hostRef.current
-    if (!host || host.querySelector('#bookero')) return
-    const target = document.createElement('div')
-    target.id = 'bookero'
-    host.appendChild(target)
-    // Konfiguracja odczytywana przez skrypt Bookero (zmienna globalna).
-    ;(window as unknown as { bookero_config?: Record<string, unknown> }).bookero_config = {
-      id: BOOKERO_ID,
-      container: 'bookero',
-      type: 'full',
-      position: '',
-      plugin_css: true,
-      lang: 'pl',
+    if (!host) return
+    if (!host.querySelector('#bookero')) {
+      const target = document.createElement('div')
+      target.id = 'bookero'
+      host.appendChild(target)
+      // Konfiguracja odczytywana przez skrypt Bookero (zmienna globalna).
+      ;(window as unknown as { bookero_config?: Record<string, unknown> }).bookero_config = {
+        id: BOOKERO_ID,
+        container: 'bookero',
+        type: 'full',
+        position: '',
+        plugin_css: true,
+        lang: 'pl',
+      }
+      // Skrypt wstrzykujemy tylko raz (odporne na podwójny mount w React StrictMode).
+      if (!document.querySelector(`script[src="${BOOKERO_SRC}"]`)) {
+        const s = document.createElement('script')
+        s.src = BOOKERO_SRC
+        s.async = true
+        document.body.appendChild(s)
+      }
     }
-    // Skrypt wstrzykujemy tylko raz (odporne na podwójny mount w React StrictMode).
-    if (!document.querySelector(`script[src="${BOOKERO_SRC}"]`)) {
-      const s = document.createElement('script')
-      s.src = BOOKERO_SRC
-      s.async = true
-      document.body.appendChild(s)
+    // Bookero domyślnie pokazuje ~9 godzin dziennie i chowa resztę za pustym „więcej".
+    // 1) Auto-rozwijamy każdą kolumnę (klik działa też na ukrytym elemencie) — wszystkie godziny od razu.
+    // 2) Każdą kolumnę przewijamy raz do 16:00, żeby domyślnie widać było godziny wieczorne (16–22).
+    // Wysokość kolumny + scroll ogarnia CSS.
+    const tune = () => {
+      host.querySelectorAll<HTMLElement>('.week-days-hour-more').forEach((el) => el.click())
+      host.querySelectorAll<HTMLElement>('.week-days-hours').forEach((list) => {
+        if (list.dataset.evening === '1') return
+        const target = Array.from(list.querySelectorAll<HTMLElement>('.week-days-hour')).find((h) =>
+          (h.textContent || '').trim().startsWith('16:00')
+        )
+        if (target) {
+          list.scrollTop += target.getBoundingClientRect().top - list.getBoundingClientRect().top
+          list.dataset.evening = '1'
+        }
+      })
     }
+    const mo = new MutationObserver(tune)
+    mo.observe(host, { childList: true, subtree: true })
+    return () => mo.disconnect()
   }, [])
   return <div ref={hostRef} />
 }
