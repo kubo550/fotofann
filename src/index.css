@@ -1081,8 +1081,8 @@ button {
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 .booking__card .week-days-hour:hover {
-  background: var(--gold-soft);
-  border-color: var(--gold);
+  background: var(--gold-soft) !important;
+  border-color: var(--gold) !important;
 }
 .booking__card .week-days-hour.is-selected {
   background: var(--gold) !important;
@@ -1155,10 +1155,22 @@ button {
 .booking__card .week-days-hours {
   gap: 5px;
 }
+/* Utwardzone !important — Bookero wstrzykuje własny CSS w runtime (ląduje po naszym na produkcji). */
 .booking__card .week-days-hour {
-  padding: 6px 4px;
-  font-size: 13.5px;
-  border-radius: 9px;
+  margin: 0 !important;
+  padding: 6px 4px !important;
+  font-size: 13.5px !important;
+  line-height: 1.2 !important;
+  text-align: center !important;
+  color: var(--ink) !important;
+  background: #fff !important;
+  border: 1px solid var(--gold-soft) !important;
+  border-radius: 9px !important;
+}
+.booking__card .week-days-hour.is-selected {
+  background: var(--gold) !important;
+  border-color: var(--gold) !important;
+  color: #fff !important;
 }
 /* --- Krok 2: podsumowanie + dane klienta --- */
 .booking__card .bookero-plugin-header {
