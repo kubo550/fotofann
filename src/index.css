@@ -733,7 +733,132 @@ button {
   padding: clamp(64px, 9vw, 120px) clamp(18px, 5vw, 80px);
 }
 .booking .head {
-  margin-bottom: 44px;
+  margin-bottom: 30px;
+}
+/* 3 szybkie kroki */
+.booking-steps {
+  list-style: none;
+  margin: 0 auto 20px;
+  padding: 0;
+  max-width: 760px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.bstep {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: var(--cream);
+  border: 1px solid var(--gold-soft);
+  border-radius: 16px;
+  padding: 18px;
+}
+.bstep__num {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--gold);
+  color: #fff;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 18px;
+}
+.bstep__body h3 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 19px;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+.bstep__body p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.booking-note {
+  max-width: 760px;
+  margin: 0 auto 28px;
+  text-align: center;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  background: var(--sand);
+  border-radius: 12px;
+  padding: 14px 20px;
+}
+.booking-note span {
+  color: var(--gold);
+  margin-right: 4px;
+}
+.booking-note a {
+  color: var(--gold-deep);
+  font-weight: 600;
+}
+@media (max-width: 720px) {
+  .booking-steps {
+    grid-template-columns: 1fr;
+  }
+}
+/* Kafle-lustro selecta usług (zamiast natywnego <select>) */
+.booking__card .svc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+.booking__card .svc-chip {
+  border: 1px solid var(--gold-soft);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+.booking__card .svc-chip:hover {
+  border-color: var(--gold);
+}
+.booking__card .svc-chip.is-active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #fff;
+}
+.booking__card .svc-hint {
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  background: var(--gold-soft);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+/* Parametry rezerwacji (np. Miejscowość) + walidacja */
+.booking__card .field input {
+  width: 100%;
+  max-width: 430px;
+}
+.booking__card .error-message {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #b3261e;
+}
+.booking__card .field.is-invalid input,
+.booking__card .field.is-invalid .vue-tel-input {
+  border-color: #b3261e !important;
 }
 .booking__card {
   max-width: 760px;
@@ -829,7 +954,7 @@ button {
 .booking__card .submit-button {
   background: var(--gold) !important;
   color: #fff !important;
-  border: none !important;
+  border: 1px solid transparent !important;
   border-radius: 999px !important;
   padding: 14px 30px !important;
   font-family: var(--sans);
@@ -843,9 +968,7 @@ button {
   transform: translateY(-1px);
 }
 .booking__card .required-fields-notice {
-  font-size: 12px;
-  color: var(--ink-2);
-  margin-top: 12px;
+  display: none;
 }
 /* Widok tygodnia: 7 dni w rzędzie zamiast kilometrowej pionówki */
 .booking__card .week-days {
@@ -1036,14 +1159,14 @@ button {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  margin-top: 6px;
+  margin-top: 24px;
 }
 .booking__card .back-button {
   background: transparent !important;
   color: var(--ink-2) !important;
   border: 1px solid var(--gold-soft) !important;
   border-radius: 999px !important;
-  padding: 13px 24px !important;
+  padding: 14px 30px !important;
   font-family: var(--sans);
   font-weight: 600;
   font-size: 15px;
@@ -1077,7 +1200,12 @@ button {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  margin-top: 6px;
+  margin-top: 24px;
+}
+/* Odstęp między „Dodaj następne zamówienie” a przyciskiem „Przejdź do podsumowania” */
+.booking__card .inquiries-list-add {
+  display: inline-block;
+  margin: 6px 0 18px;
 }
 /* Wszystkie linki wewnątrz widgetu Bookero na złoto (zabija domyślny fiolet: Usuń, Anuluj, Zobacz szczegóły, Dodaj następne) */
 .booking__card a {

@@ -177,7 +177,7 @@ const PERKS = [
   { title: 'Bezpieczny dym', text: 'Hipoalergiczny, neutralny zapach, znika bez śladu, parkiet suchy.' },
   { title: 'Różne tła', text: 'Eleganckie białe, stylowe boho lub dmuchany namiot LED.' },
   { title: 'Mnóstwo gadżetów', text: 'Skrzynia pełna rekwizytów do najlepszej zabawy.' },
-  { title: 'Personalizacja', text: 'Paski, filmiki i dekoracje dopasowane do Waszej imprezy.' },
+  { title: 'Personalizacja', text: 'Paski, filmiki i dekoracje dopasowane do Twojej imprezy.' },
 ]
 
 const PACKAGES = [
@@ -285,20 +285,151 @@ function BookeroWidget() {
       host.querySelectorAll<HTMLElement>('.week-days-hour-more').forEach((el) => el.click())
       host.querySelectorAll<HTMLElement>('.week-days-hours').forEach((list) => {
         if (list.dataset.evening === '1') return
-        const target = Array.from(list.querySelectorAll<HTMLElement>('.week-days-hour')).find((h) =>
-          (h.textContent || '').trim().startsWith('16:00')
-        )
-        if (target) {
-          list.scrollTop += target.getBoundingClientRect().top - list.getBoundingClientRect().top
+        const hours = Array.from(list.querySelectorAll<HTMLElement>('.week-days-hour'))
+        const target = hours.find((h) => (h.textContent || '').trim().startsWith('16:00'))
+        const first = hours[0]
+        if (target && first) {
+          // offsetTop (niezależny od pozycji strony/przebudowy — nie przestrzeliwuje przy koszyku),
+          // minus jedna pozycja, żeby 16:00 nie kleiło się do samej góry.
+          const offset = target.offsetHeight + 6
+          list.scrollTop = Math.max(0, target.offsetTop - first.offsetTop - offset)
           list.dataset.evening = '1'
         }
       })
+      // Zamiana natywnego <select> usług na klikalne kafle (raz na instancję selecta).
+      const sel = host.querySelector<HTMLSelectElement>('#bookero-plugin-service')
+      if (sel && sel.dataset.chipped !== '1') {
+        sel.dataset.chipped = '1'
+        sel.style.display = 'none'
+        const wrap = document.createElement('div')
+        wrap.className = 'svc-chips'
+        const render = () => {
+          wrap.innerHTML = ''
+          Array.from(sel.options).forEach((opt) => {
+            if (!opt.value) return
+            const chip = document.createElement('button')
+            chip.type = 'button'
+            chip.className = 'svc-chip' + (opt.value === sel.value ? ' is-active' : '')
+            chip.textContent = opt.textContent
+            chip.addEventListener('click', () => {
+              sel.value = opt.value
+              sel.dispatchEvent(new Event('change', { bubbles: true }))
+              sel.dispatchEvent(new Event('input', { bubbles: true }))
+              render()
+            })
+            wrap.appendChild(chip)
+          })
+        }
+        render()
+        sel.addEventListener('change', render)
+        sel.insertAdjacentElement('afterend', wrap)
+        // Podpowiedź o koszyku (multiselect nie jest natywny w Bookero — dodaje się po jednej).
+        const hint = document.createElement('p')
+        hint.className = 'svc-hint'
+        hint.textContent =
+          'Chcesz kilka atrakcji? Wybierz jedną, ustaw termin i kliknij „Dodaj do koszyka”, a potem dodaj kolejną.'
+        wrap.insertAdjacentElement('afterend', hint)
+      }
     }
     const mo = new MutationObserver(tune)
     mo.observe(host, { childList: true, subtree: true })
     return () => mo.disconnect()
   }, [])
   return <div ref={hostRef} />
+}
+
+/* ---------- Contact form (Web3Forms) ---------- */
+// Access key jest publiczny (przeznaczony do front-endu). Web3Forms wysyła na adres powiązany z kluczem.
+const WEB3FORMS_KEY = 'c3e91cd5-eeca-4f6a-a151-7cb24d098cda'
+
+function ContactForm() {
+  const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'error'>('idle')
+  const [hp, setHp] = useState('')
+  const [f, setF] = useState({ name: '', contact: '', message: '' })
+  const on =
+    (k: keyof typeof f) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setF((s) => ({ ...s, [k]: e.target.value }))
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (hp) {
+      setStatus('ok')
+      return
+    }
+    setStatus('sending')
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: 'Pytanie ze strony FotoFann',
+          from_name: 'Formularz kontaktowy FotoFann',
+          Imię: f.name || '(nie podano)',
+          Kontakt: f.contact,
+          Wiadomość: f.message || '(brak)',
+        }),
+      })
+      const data = await res.json()
+      setStatus(data.success === true || data.success === 'true' ? 'ok' : 'error')
+    } catch {
+      setStatus('error')
+    }
+  }
+
+  if (status === 'ok') {
+    return (
+      <div className="thanks" role="status" aria-live="polite">
+        <h3>Dziękujemy!</h3>
+        <p>Wiadomość została wysłana. Odezwiemy się najszybciej, jak to możliwe.</p>
+        <p className="thanks__script">Do usłyszenia!</p>
+      </div>
+    )
+  }
+
+  return (
+    <form className="form" onSubmit={submit}>
+      <input
+        type="text"
+        name="website"
+        className="hp-field"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        value={hp}
+        onChange={(e) => setHp(e.target.value)}
+      />
+      <div className="field-row">
+        <div>
+          <label className="label" htmlFor="c-name">
+            Imię
+          </label>
+          <input id="c-name" className="input" type="text" autoComplete="name" required value={f.name} onChange={on('name')} placeholder="Twoje imię" />
+        </div>
+        <div>
+          <label className="label" htmlFor="c-contact">
+            Telefon lub e-mail
+          </label>
+          <input id="c-contact" className="input" type="text" inputMode="tel" required value={f.contact} onChange={on('contact')} placeholder="504 579 380 / mail@…" />
+        </div>
+      </div>
+      <div>
+        <label className="label" htmlFor="c-message">
+          Wiadomość
+        </label>
+        <textarea id="c-message" className="textarea" rows={4} value={f.message} onChange={on('message')} placeholder="W czym możemy pomóc? Termin, atrakcje, pytania…" />
+      </div>
+      <button type="submit" className="submit" disabled={status === 'sending'}>
+        {status === 'sending' ? 'Wysyłanie…' : 'Wyślij wiadomość'}
+      </button>
+      {status === 'error' && (
+        <p className="form-error" role="alert">
+          Coś poszło nie tak przy wysyłce. Zadzwoń: <a href="tel:+48504579380">504 579 380</a> lub spróbuj ponownie.
+        </p>
+      )}
+    </form>
+  )
 }
 
 /* ---------- App ---------- */
@@ -334,7 +465,7 @@ function App() {
 
       {/* NAV */}
       <nav className="nav" aria-label="Nawigacja główna">
-        <a href="#top" className="nav__brand" aria-label="FotoFann x LIL JOY — strona główna">
+        <a href="#top" className="nav__brand" aria-label="FotoFann x LIL JOY, strona główna">
           <BrandLockup markSize={26} />
         </a>
         <div className="nav__links">
@@ -503,7 +634,7 @@ function App() {
               </div>
               <h2 id="dlaczego-title">Co warto wiedzieć</h2>
               <p className="why__lead">
-                Dbamy o każdy detal, by zabawa była bezpieczna, a wspomnienia trafiały od razu w Wasze ręce.
+                Dbamy o każdy detal, by zabawa była bezpieczna, a wspomnienia trafiały od razu w Twoje ręce.
               </p>
               <ul className="perks">
                 {PERKS.map((p) => (
@@ -547,7 +678,7 @@ function App() {
               <Ribbon>Realizacje</Ribbon>
             </div>
             <h2 id="galeria-title">Galeria realizacji</h2>
-            <p>Chwile, które dla Was uwieczniliśmy.</p>
+            <p>Chwile, które dla Ciebie uwieczniliśmy.</p>
           </div>
           <div className="gallery">
             {GALLERY.map((g, i) => (
@@ -573,7 +704,7 @@ function App() {
             </div>
             <h2 id="pakiety-title">Pakiety i rabaty</h2>
             <p>
-              Im więcej atrakcji wybierzecie, tym korzystniej. Ceny ustalamy indywidualnie, jesteśmy
+              Im więcej atrakcji wybierzesz, tym korzystniej. Ceny ustalamy indywidualnie, jesteśmy
               otwarci na rozmowę.
             </p>
           </div>
@@ -602,13 +733,57 @@ function App() {
               <Ribbon>Rezerwacja</Ribbon>
             </div>
             <h2 id="rezerwacja-title">Zarezerwuj termin</h2>
-            <p>
-              Wybierz atrakcje oraz dostępny termin, a rezerwację potwierdzisz od razu online.
-            </p>
+            <p>Trzy szybkie kroki, resztą zajmiemy się my.</p>
           </div>
+
+          <ol className="booking-steps reveal">
+            <li className="bstep">
+              <span className="bstep__num">1</span>
+              <div className="bstep__body">
+                <h3>Wybierz atrakcje</h3>
+                <p>Zaznacz wszystko, co Cię interesuje.</p>
+              </div>
+            </li>
+            <li className="bstep">
+              <span className="bstep__num">2</span>
+              <div className="bstep__body">
+                <h3>Zaznacz termin</h3>
+                <p>Data i godzina rozpoczęcia Twojej imprezy.</p>
+              </div>
+            </li>
+            <li className="bstep">
+              <span className="bstep__num">3</span>
+              <div className="bstep__body">
+                <h3>Podaj miejscowość</h3>
+                <p>Zostaw kontakt, a resztą zajmiemy się my.</p>
+              </div>
+            </li>
+          </ol>
+
+          <p className="booking-note reveal">
+            <span aria-hidden="true">✦</span> Atrakcja niedostępna w Twoim terminie? Nie rezygnuj,{' '}
+            <a href="tel:+48504579380">zadzwoń</a> lub <a href="#pytanie">napisz</a>, coś wymyślimy.
+          </p>
 
           <div className="booking__card reveal">
             <BookeroWidget />
+          </div>
+        </section>
+
+        {/* QUESTION / CONTACT FORM */}
+        <section id="pytanie" className="section section--cream" aria-labelledby="pytanie-title">
+          <div className="head reveal">
+            <div className="ribbon-wrap">
+              <Ribbon>Kontakt</Ribbon>
+            </div>
+            <h2 id="pytanie-title">Masz pytanie?</h2>
+            <p>
+              Nie wiesz, co wybrać, albo Twojego terminu nie ma w kalendarzu? Napisz, a odezwiemy się
+              najszybciej, jak to możliwe.
+            </p>
+          </div>
+          <div className="booking__card reveal">
+            <ContactForm />
           </div>
         </section>
       </main>
