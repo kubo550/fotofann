@@ -794,7 +794,132 @@ button {
   padding: clamp(64px, 9vw, 120px) clamp(18px, 5vw, 80px);
 }
 .booking .head {
-  margin-bottom: 44px;
+  margin-bottom: 30px;
+}
+/* 3 szybkie kroki */
+.booking-steps {
+  list-style: none;
+  margin: 0 auto 20px;
+  padding: 0;
+  max-width: 760px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.bstep {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: var(--cream);
+  border: 1px solid var(--gold-soft);
+  border-radius: 16px;
+  padding: 18px;
+}
+.bstep__num {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--gold);
+  color: #fff;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 18px;
+}
+.bstep__body h3 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 19px;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+.bstep__body p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.booking-note {
+  max-width: 760px;
+  margin: 0 auto 28px;
+  text-align: center;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  background: var(--sand);
+  border-radius: 12px;
+  padding: 14px 20px;
+}
+.booking-note span {
+  color: var(--gold);
+  margin-right: 4px;
+}
+.booking-note a {
+  color: var(--gold-deep);
+  font-weight: 600;
+}
+@media (max-width: 720px) {
+  .booking-steps {
+    grid-template-columns: 1fr;
+  }
+}
+/* Kafle-lustro selecta usług (zamiast natywnego <select>) */
+.booking__card .svc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+.booking__card .svc-chip {
+  border: 1px solid var(--gold-soft);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+.booking__card .svc-chip:hover {
+  border-color: var(--gold);
+}
+.booking__card .svc-chip.is-active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #fff;
+}
+.booking__card .svc-hint {
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  background: var(--gold-soft);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+/* Parametry rezerwacji (np. Miejscowość) + walidacja */
+.booking__card .field input {
+  width: 100%;
+  max-width: 430px;
+}
+.booking__card .error-message {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #b3261e;
+}
+.booking__card .field.is-invalid input,
+.booking__card .field.is-invalid .vue-tel-input {
+  border-color: #b3261e !important;
 }
 .booking__card {
   max-width: 760px;
@@ -804,6 +929,349 @@ button {
   border-radius: 24px;
   box-shadow: 0 40px 80px -50px rgba(31, 36, 51, 0.6);
   overflow: hidden;
+  padding: clamp(24px, 4vw, 44px);
+}
+
+/* ---------- Bookero widget: dopasowanie do stylu strony ---------- */
+.booking__card .bookero-plugin-form-wrapper,
+.booking__card .bookero-plugin-form {
+  font-family: var(--sans);
+  color: var(--ink);
+}
+/* Ukryj zdublowany nagłówek widgetu — mamy już „Zarezerwuj termin” w sekcji */
+.booking__card .bookero-plugin-header-add {
+  display: none !important;
+}
+.booking__card .bookero-plugin-form-heading {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--ink);
+  margin: 22px 0 12px;
+}
+.booking__card label,
+.booking__card .label-people-number {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 8px;
+  display: block;
+}
+.booking__card input[type='number'],
+.booking__card input[type='text'],
+.booking__card input[type='email'],
+.booking__card input[type='tel'],
+.booking__card .field input,
+.booking__card select,
+.booking__card textarea {
+  border: 1px solid var(--gold-soft) !important;
+  border-radius: 12px !important;
+  padding: 12px 14px !important;
+  font-size: 15px;
+  background: #fff;
+  color: var(--ink);
+  max-width: 100%;
+}
+.booking__card input:focus,
+.booking__card select:focus,
+.booking__card textarea:focus {
+  outline: none;
+  border-color: var(--gold) !important;
+}
+.booking__card .people-number-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.booking__card .people-number-plus,
+.booking__card .people-number-minus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--gold-soft);
+  color: var(--gold-deep);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+}
+.booking__card .week-date-month-year {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--ink);
+}
+.booking__card .week-nav-prev,
+.booking__card .week-nav-next {
+  color: var(--gold) !important;
+  font-size: 26px;
+  text-decoration: none;
+}
+.booking__card .submit-button {
+  background: var(--gold) !important;
+  color: #fff !important;
+  border: 1px solid transparent !important;
+  border-radius: 999px !important;
+  padding: 14px 30px !important;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 12px 30px -12px rgba(201, 162, 75, 0.7);
+  transition: transform 0.15s ease;
+}
+.booking__card .submit-button:hover {
+  transform: translateY(-1px);
+}
+.booking__card .required-fields-notice {
+  display: none;
+}
+/* Widok tygodnia: 7 dni w rzędzie zamiast kilometrowej pionówki */
+.booking__card .week-days {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+.booking__card .week-days-column {
+  flex: 1 0 92px !important;
+  min-width: 92px;
+  display: flex;
+  flex-direction: column;
+}
+.booking__card .week-days-heading {
+  text-align: center;
+  padding: 6px 2px 8px;
+  border-bottom: 1px solid var(--gold-soft);
+  margin-bottom: 8px;
+}
+.booking__card .week-days-heading-day {
+  display: block;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--ink);
+}
+.booking__card .week-days-heading-date {
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.booking__card .week-days-hours {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 4px;
+  /* ~8,5 slota widoczne, reszta na scrollu */
+  max-height: 316px;
+  overflow-y: auto;
+}
+.booking__card .week-days-hour {
+  border: 1px solid var(--gold-soft);
+  border-radius: 8px;
+  padding: 7px 4px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.booking__card .week-days-hour:hover {
+  background: var(--gold-soft);
+  border-color: var(--gold);
+}
+.booking__card .week-days-hour.is-selected {
+  background: var(--gold) !important;
+  border-color: var(--gold) !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+.booking__card .week-days-error {
+  font-size: 12px;
+  color: var(--ink-2);
+  text-align: center;
+  padding: 8px 2px;
+}
+/* Godziny rozwijamy automatycznie w JS, więc chowamy natywny przycisk „więcej” */
+.booking__card .week-days-hour-more {
+  display: none !important;
+}
+/* --- Dopieszczenie widoku tygodnia --- */
+.booking__card .week {
+  position: relative;
+}
+.booking__card .week-date-month-year {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.booking__card .week-nav-prev,
+.booking__card .week-nav-next {
+  position: absolute;
+  top: 0;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: var(--gold-soft);
+  color: var(--gold-deep) !important;
+  font-size: 20px;
+  line-height: 1;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.booking__card .week-nav-prev:hover,
+.booking__card .week-nav-next:hover {
+  background: var(--gold);
+  color: #fff !important;
+}
+.booking__card .week-nav-next {
+  right: 0;
+}
+.booking__card .week-nav-prev {
+  right: 46px;
+}
+.booking__card .week-nav-prev.is-hidden {
+  display: none !important;
+}
+.booking__card .week-days {
+  margin-top: 14px;
+}
+.booking__card .week-days-column:not(:last-child) {
+  border-right: 1px solid rgba(201, 162, 75, 0.16);
+  padding-right: 8px;
+}
+.booking__card .week-days-heading {
+  padding: 0 2px 8px;
+  margin-bottom: 10px;
+}
+.booking__card .week-days-hours {
+  gap: 5px;
+}
+.booking__card .week-days-hour {
+  padding: 6px 4px;
+  font-size: 13.5px;
+  border-radius: 9px;
+}
+/* --- Krok 2: podsumowanie + dane klienta --- */
+.booking__card .bookero-plugin-header {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 26px;
+  color: var(--ink);
+  margin: 6px 0 6px;
+}
+.booking__card .inquiry-title {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 20px;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
+.booking__card .inquiry {
+  background: var(--cream);
+  border: 1px solid var(--gold-soft);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 22px;
+}
+.booking__card .inquiry-label {
+  color: var(--gold-deep);
+  font-weight: 600;
+}
+.booking__card .inquiry-datetime,
+.booking__card .inquiry-service {
+  color: var(--ink-2);
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+.booking__card .inquiry-actions-details {
+  color: var(--gold-deep) !important;
+  font-weight: 600;
+  text-decoration: underline;
+}
+.booking__card .customer-section input,
+.booking__card .vue-tel-input {
+  width: 100%;
+  max-width: 430px;
+}
+.booking__card .vue-tel-input {
+  border: 1px solid var(--gold-soft) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+.booking__card .vue-tel-input:focus-within {
+  border-color: var(--gold) !important;
+  box-shadow: none !important;
+}
+.booking__card .vti__input {
+  border: none !important;
+  border-radius: 0 !important;
+}
+.booking__card .submit-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.booking__card .back-button {
+  background: transparent !important;
+  color: var(--ink-2) !important;
+  border: 1px solid var(--gold-soft) !important;
+  border-radius: 999px !important;
+  padding: 14px 30px !important;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.booking__card .back-button:hover {
+  border-color: var(--gold) !important;
+  color: var(--ink) !important;
+}
+/* --- Koszyk usług: przyciski i linki --- */
+.booking__card .add-button {
+  background: var(--gold) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 999px !important;
+  padding: 14px 30px !important;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 12px 30px -12px rgba(201, 162, 75, 0.7);
+  transition: transform 0.15s ease;
+}
+.booking__card .add-button:hover {
+  transform: translateY(-1px);
+}
+.booking__card .add-to-cart-section,
+.booking__card .inquiries-list-add-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+/* Odstęp między „Dodaj następne zamówienie” a przyciskiem „Przejdź do podsumowania” */
+.booking__card .inquiries-list-add {
+  display: inline-block;
+  margin: 6px 0 18px;
+}
+/* Wszystkie linki wewnątrz widgetu Bookero na złoto (zabija domyślny fiolet: Usuń, Anuluj, Zobacz szczegóły, Dodaj następne) */
+.booking__card a {
+  color: var(--gold-deep) !important;
+  font-weight: 600;
 }
 .form {
   padding: clamp(26px, 4.5vw, 48px);
